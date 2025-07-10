@@ -1,0 +1,221 @@
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from '@/components/ui/dialog';
+import { loansApi } from '@/lib/api';
+import { Plus, Eye, Edit, Trash2 } from 'lucide-react';
+import LoanForm from './LoanForm';
+import PersonTransactionDetails from './PersonTransactionDetails';
+
+export default function MoneyLentSection() {
+  const [selectedLoan, setSelectedLoan] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [editingLoan, setEditingLoan] = useState(null);
+  
+  const queryClient = useQueryClient();
+
+  const { data: allLoans, isLoading, error } = useQuery({
+    queryKey: ['loans'],
+    queryFn: () => loansApi.getAll().then(res => res),
+    
+  });
+
+  // Filter loans to show only 'given' type (Money Lent)
+  console.log(error);
+  const lentLoans = allLoans?.filter(loan => loan.type === 'given') || [];
+  console.log(lentLoans);
+
+  const deleteMutation = useMutation({
+    mutationFn: loansApi.delete,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['loans']);
+      queryClient.invalidateQueries(['overview']);
+    },
+  });
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-BD', {
+      style: 'currency',
+      currency: 'BDT',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this loan? This will also delete all related transactions.')) {
+      deleteMutation.mutate(id);
+    }
+  };
+
+  const handleEdit = (loan) => {
+    setEditingLoan(loan);
+    setIsFormOpen(true);
+  };
+
+  const handleViewDetails = (loan) => {
+    setSelectedLoan(loan);
+    setIsDetailsOpen(true);
+  };
+
+  const handleFormClose = () => {
+    setIsFormOpen(false);
+    setEditingLoan(null);
+  };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Money Lent</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-12 bg-muted rounded"></div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Money Lent</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-destructive">Error loading loans</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle className="text-green-600">Money Lent</CardTitle>
+        <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+          <DialogTrigger asChild>
+            <Button onClick={() => setEditingLoan(null)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Person
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {editingLoan ? 'Edit Loan' : 'Add New Person (Money Lent)'}
+              </DialogTitle>
+            </DialogHeader>
+            <LoanForm 
+              loan={editingLoan} 
+              onClose={handleFormClose}
+              defaultType="given"
+            />
+          </DialogContent>
+        </Dialog>
+      </CardHeader>
+      <CardContent>
+        {lentLoans.length === 0 ? (
+          <p className="text-muted-foreground text-center py-8">
+            No money lent records found. Add your first loan to get started.
+          </p>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[150px]">Person Name</TableHead>
+                <TableHead className="text-center">Current Balance</TableHead>
+                <TableHead>Initial Amount</TableHead>
+                {/* <TableHead>Date Created</TableHead> */}
+                {/* <TableHead>Last Transaction</TableHead> */}
+                <TableHead className="w-[10px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {lentLoans.map((loan) => (
+                <TableRow key={loan._id}>
+                  <TableCell className="font-medium">
+                    {loan.personName}
+                  </TableCell>
+                  <TableCell className={`font-semibold text-center ${
+                    loan.currentBalance > 0 ? 'text-green-600' : 'text-muted-foreground'
+                  }`}>
+                    {formatCurrency(loan.currentBalance)}
+                  </TableCell>
+                  <TableCell>
+                    {formatCurrency(loan.initialAmount)}
+                  </TableCell>
+                  {/* <TableCell>
+                    {new Date(loan.createdAt).toLocaleDateString()}
+                  </TableCell> */}
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewDetails(loan)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(loan)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDelete(loan._id)}
+                        disabled={deleteMutation.isPending}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+
+        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+          <DialogContent className="max-w-7xl">
+            <DialogHeader>
+              <DialogTitle>
+                {selectedLoan?.personName} - Transaction Details
+              </DialogTitle>
+            </DialogHeader>
+            {selectedLoan && (
+              <PersonTransactionDetails 
+                loanId={selectedLoan._id}
+                onClose={() => setIsDetailsOpen(false)}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
+  );
+}

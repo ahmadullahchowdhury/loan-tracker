@@ -1,0 +1,41 @@
+{
+  "name": "loan-tracker",
+  "version": "1.0.0",
+  "description": "Family Loan Management System - Track loans given to and received from family members",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "cd backend && npm install && cd ../frontend/loan-tracker-frontend && pnpm install",
+    "start-backend": "cd backend && npm start",
+    "start-frontend": "cd frontend/loan-tracker-frontend && pnpm run dev --host",
+    "dev-backend": "cd backend && npm run dev",
+    "build-frontend": "cd frontend/loan-tracker-frontend && pnpm run build",
+    "start-all": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
+    "dev-all": "concurrently \"npm run dev-backend\" \"npm run start-frontend\""
+  },
+  "keywords": [
+    "loan-tracker",
+    "family-finance",
+    "money-management",
+    "react",
+    "nodejs",
+    "mongodb",
+    "express"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/loan-tracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/loan-tracker/issues"
+  },
+  "homepage": "https://github.com/yourusername/loan-tracker#readme"
+}
+
