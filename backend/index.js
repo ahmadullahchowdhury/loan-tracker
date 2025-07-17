@@ -12,7 +12,7 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: 'http://localhost:5173', // or '*' for all, but this is less secure
+  origin: ['http://localhost:5173', 'https://loan-tracker-1-2y0v.onrender.com'], // or '*' for all, but this is less secure
   credentials: true
 }));
 
