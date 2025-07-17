@@ -115,19 +115,19 @@ export default function PersonTransactionDetails({ loanId }) {
         <div className="flex justify-between items-center">
           <div>
             <h3 className="text-xl font-semibold">
-              Current Balance: {formatCurrency(loan.currentBalance)}
+              Remaining lent Amount : {formatCurrency(loan.currentBalance)}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            {/* <p className="text-sm text-muted-foreground">
               Initial Amount: {formatCurrency(loan.initialAmount)}
-            </p>
-            <p className="text-sm text-muted-foreground">
+            </p> */}
+            {/* <p className="text-sm text-muted-foreground">
               Type: {loan.type === 'given' ? 'Money Lent' : 'Money Borrowed'}
-            </p>
-            {loan.notes && (
+            </p> */}
+            {/* {loan.notes && (
               <p className="text-sm text-muted-foreground mt-1">
                 Notes: {loan.notes}
               </p>
-            )}
+            )} */}
           </div>
           <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
             <DialogTrigger asChild>
