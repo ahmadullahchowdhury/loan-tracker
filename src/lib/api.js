@@ -64,6 +64,10 @@ export const loansApi = {
     const response = await api.delete(`/loans/${id}`);
     return response.data;
   },
+  sendSummary: async (id) => {
+    const response = await api.post(`/loans/${id}/send-summary`);
+    return response.data;
+  },
 };
 
 export const transactionsApi = {

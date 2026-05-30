@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { transactionsApi } from '@/lib/api';
 
 export default function TransactionForm({ loan, transaction, onClose }) {
@@ -18,6 +19,7 @@ export default function TransactionForm({ loan, transaction, onClose }) {
       : new Date().toISOString().split('T')[0],
     method: transaction?.method || 'Cash',
     notes: transaction?.notes || '',
+    sendEmail: true,
   });
 
   const queryClient = useQueryClient();
@@ -137,6 +139,19 @@ export default function TransactionForm({ loan, transaction, onClose }) {
           rows={3}
         />
       </div>
+
+      {!transaction && loan.contactEmail && (
+        <div className="flex items-center justify-between rounded-lg border p-3">
+          <div>
+            <p className="text-sm font-medium">Send email alert</p>
+            <p className="text-xs text-muted-foreground">Notify {loan.contactEmail}</p>
+          </div>
+          <Switch
+            checked={formData.sendEmail}
+            onCheckedChange={(checked) => handleChange('sendEmail', checked)}
+          />
+        </div>
+      )}
 
       <div className="flex justify-end space-x-2">
         <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>

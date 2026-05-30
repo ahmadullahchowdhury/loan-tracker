@@ -22,7 +22,7 @@ export async function POST(request) {
   if (error) return error;
 
   try {
-    const { loanId, type, amount, method, notes, transactionDate } = await request.json();
+    const { loanId, type, amount, method, notes, transactionDate, sendEmail = true } = await request.json();
 
     if (!loanId || !type || !amount) {
       return NextResponse.json({ message: 'Please provide all required fields' }, { status: 400 });
@@ -74,7 +74,7 @@ export async function POST(request) {
     }
 
     // Fire-and-forget — email failure must never block the transaction response
-    if (loan.contactEmail) {
+    if (loan.contactEmail && sendEmail) {
       console.log('[email] sending to:', loan.contactEmail);
       sendTransactionNotification({
         toEmail: loan.contactEmail,

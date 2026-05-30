@@ -7,12 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { transactionsApi, loansApi } from '@/lib/api';
-import { Plus, Edit, Trash2, Mail } from 'lucide-react';
+import { Plus, Edit, Trash2, Mail, Send } from 'lucide-react';
 import TransactionForm from './TransactionForm';
 
 export default function PersonTransactionDetails({ loanId }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
+  const [summaryStatus, setSummaryStatus] = useState(null); // null | 'sending' | 'sent' | 'error'
   const queryClient = useQueryClient();
 
   const { data: loan, isLoading: loanLoading } = useQuery({
@@ -63,6 +64,18 @@ export default function PersonTransactionDetails({ loanId }) {
     setEditingTransaction(null);
   };
 
+  const handleSendSummary = async () => {
+    setSummaryStatus('sending');
+    try {
+      await loansApi.sendSummary(loanId);
+      setSummaryStatus('sent');
+      setTimeout(() => setSummaryStatus(null), 4000);
+    } catch {
+      setSummaryStatus('error');
+      setTimeout(() => setSummaryStatus(null), 4000);
+    }
+  };
+
   if (isLoading || loanLoading) {
     return (
       <div className="animate-pulse space-y-4">
@@ -88,20 +101,53 @@ export default function PersonTransactionDetails({ loanId }) {
               </p>
             )}
           </div>
-          <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setEditingTransaction(null)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Transaction
+          <div className="flex items-center gap-2">
+            {loan.contactEmail && (
+              <Button
+                variant="outline"
+                onClick={handleSendSummary}
+                disabled={summaryStatus === 'sending'}
+                title={`Send summary to ${loan.contactEmail}`}
+              >
+                {summaryStatus === 'sending' ? (
+                  <>
+                    <Send className="h-4 w-4 mr-2 animate-pulse" />
+                    Sending...
+                  </>
+                ) : summaryStatus === 'sent' ? (
+                  <>
+                    <Mail className="h-4 w-4 mr-2 text-green-600" />
+                    <span className="text-green-600">Sent!</span>
+                  </>
+                ) : summaryStatus === 'error' ? (
+                  <>
+                    <Mail className="h-4 w-4 mr-2 text-destructive" />
+                    <span className="text-destructive">Failed</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4 mr-2" />
+                    Send Summary
+                  </>
+                )}
               </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{editingTransaction ? 'Edit Transaction' : 'Add New Transaction'}</DialogTitle>
-              </DialogHeader>
-              <TransactionForm loan={loan} transaction={editingTransaction} onClose={handleFormClose} />
-            </DialogContent>
-          </Dialog>
+            )}
+
+            <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={() => setEditingTransaction(null)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Transaction
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{editingTransaction ? 'Edit Transaction' : 'Add New Transaction'}</DialogTitle>
+                </DialogHeader>
+                <TransactionForm loan={loan} transaction={editingTransaction} onClose={handleFormClose} />
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </div>
 
