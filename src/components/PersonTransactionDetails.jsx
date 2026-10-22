@@ -89,19 +89,19 @@ export default function PersonTransactionDetails({ loanId }) {
   return (
     <div className="space-y-6">
       <div className="bg-muted/50 p-4 rounded-lg">
-        <div className="flex justify-between items-center">
-          <div>
-            <h3 className="text-xl font-semibold">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="min-w-0">
+            <h3 className="text-base sm:text-xl font-semibold wrap-break-word">
               {loan.type === 'given' ? 'Current Balance (Need to Pay)' : 'Current Balance (I will Pay)'}: {formatCurrency(loan.currentBalance)}
             </h3>
             {loan.contactEmail && (
-              <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                <Mail className="h-3.5 w-3.5" />
+              <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1 break-all">
+                <Mail className="h-3.5 w-3.5 shrink-0" />
                 {loan.contactEmail}
               </p>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 [&>button]:flex-1 sm:[&>button]:flex-none">
             {loan.contactEmail && (
               <Button
                 variant="outline"
@@ -156,7 +156,37 @@ export default function PersonTransactionDetails({ loanId }) {
         {transactions?.length === 0 ? (
           <p className="text-muted-foreground text-center py-8">No transactions found.</p>
         ) : (
-          <Table>
+          <>
+          <div className="space-y-3 md:hidden">
+            {transactions?.map((t) => (
+              <div key={t._id} className="rounded-lg border p-3 space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <Badge className={typeColor[t.type]}>{typeLabel[t.type]}</Badge>
+                  <span className="font-semibold">{formatCurrency(t.amount)}</span>
+                </div>
+                <div className="flex items-center justify-between gap-2 text-sm text-muted-foreground">
+                  <span>{new Date(t.transactionDate).toLocaleDateString()}</span>
+                  <span>{t.method}</span>
+                </div>
+                {t.notes && <p className="text-sm wrap-break-word">{t.notes}</p>}
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" size="sm" onClick={() => handleEdit(t)} aria-label="Edit transaction">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(t._id)}
+                    disabled={deleteMutation.isPending}
+                    aria-label="Delete transaction"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Table className="hidden md:table">
             <TableHeader>
               <TableRow>
                 <TableHead>Date</TableHead>
@@ -164,7 +194,7 @@ export default function PersonTransactionDetails({ loanId }) {
                 <TableHead>Amount</TableHead>
                 <TableHead>Method</TableHead>
                 <TableHead>Notes</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -176,9 +206,9 @@ export default function PersonTransactionDetails({ loanId }) {
                   </TableCell>
                   <TableCell className="font-semibold">{formatCurrency(t.amount)}</TableCell>
                   <TableCell>{t.method}</TableCell>
-                  <TableCell className="max-w-xs truncate">{t.notes || '-'}</TableCell>
+                  <TableCell className="max-w-[16rem] truncate" title={t.notes || undefined}>{t.notes || '-'}</TableCell>
                   <TableCell>
-                    <div className="flex space-x-2">
+                    <div className="flex justify-end gap-2">
                       <Button variant="outline" size="sm" onClick={() => handleEdit(t)}>
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -196,6 +226,7 @@ export default function PersonTransactionDetails({ loanId }) {
               ))}
             </TableBody>
           </Table>
+          </>
         )}
       </div>
     </div>

@@ -17,12 +17,12 @@ export default function Dashboard() {
         {[...Array(4)].map((_, i) => (
           <Card key={i} className="animate-pulse">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div className="h-4 bg-gray-200 rounded w-20"></div>
-              <div className="h-4 w-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-muted rounded w-20"></div>
+              <div className="h-4 w-4 bg-muted rounded"></div>
             </CardHeader>
             <CardContent>
-              <div className="h-8 bg-gray-200 rounded w-24 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-16"></div>
+              <div className="h-8 bg-muted rounded w-24 mb-2"></div>
+              <div className="h-3 bg-muted rounded w-16"></div>
             </CardContent>
           </Card>
         ))}
@@ -93,7 +93,7 @@ export default function Dashboard() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Loans</CardTitle>
-          <Users className="h-4 w-4 text-gray-600" />
+          <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-xl sm:text-2xl font-bold">{overview?.totalLoans || 0}</div>

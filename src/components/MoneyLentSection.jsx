@@ -73,7 +73,7 @@ export default function MoneyLentSection() {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
         <CardTitle className="text-green-600">Money Lent</CardTitle>
         <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
           <DialogTrigger asChild>
@@ -99,20 +99,27 @@ export default function MoneyLentSection() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[150px]">Person Name</TableHead>
-                <TableHead className="text-center">Current Balance (Need to Pay)</TableHead>
-                <TableHead>Last Transaction</TableHead>
-                <TableHead className="w-[10px]">Actions</TableHead>
+                <TableHead>Person Name</TableHead>
+                <TableHead className="text-center"><span className="hidden sm:inline">Current Balance (Need to Pay)</span><span className="sm:hidden">Balance</span></TableHead>
+                <TableHead className="hidden md:table-cell">Last Transaction</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {lentLoans.map((loan) => (
                 <TableRow key={loan._id}>
-                  <TableCell className="font-medium">{loan.personName}</TableCell>
+                  <TableCell className="font-medium max-w-[9rem] sm:max-w-none">
+                    <div className="truncate">{loan.personName}</div>
+                    {loan.lastTransaction && (
+                      <div className="text-xs font-normal text-muted-foreground md:hidden">
+                        {TX_LABELS[loan.lastTransaction.type]} {formatCurrency(loan.lastTransaction.amount)}
+                      </div>
+                    )}
+                  </TableCell>
                   <TableCell className={`font-semibold text-center ${loan.currentBalance > 0 ? 'text-green-600' : 'text-muted-foreground'}`}>
                     {formatCurrency(loan.currentBalance)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden md:table-cell">
                     {loan.lastTransaction ? (
                       <div className="flex flex-col gap-0.5">
                         <span className="font-medium">{formatCurrency(loan.lastTransaction.amount)}</span>
@@ -126,14 +133,14 @@ export default function MoneyLentSection() {
                     )}
                   </TableCell>
                   <TableCell>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => handleViewDetails(loan)}>
+                    <div className="flex justify-end gap-1.5 sm:gap-2">
+                      <Button variant="outline" size="sm" onClick={() => handleViewDetails(loan)} aria-label="View transactions">
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleEdit(loan)}>
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(loan)} aria-label="Edit person">
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleDelete(loan._id)} disabled={deleteMutation.isPending}>
+                      <Button variant="outline" size="sm" onClick={() => handleDelete(loan._id)} disabled={deleteMutation.isPending} aria-label="Delete person">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -145,7 +152,7 @@ export default function MoneyLentSection() {
         )}
 
         <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-          <DialogContent className="max-w-7xl">
+          <DialogContent className="sm:max-w-5xl">
             <DialogHeader>
               <DialogTitle>{selectedLoan?.personName} - Transaction Details</DialogTitle>
             </DialogHeader>

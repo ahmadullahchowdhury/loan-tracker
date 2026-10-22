@@ -86,7 +86,7 @@ export default function LoanForm({ loan, onClose, defaultType = 'given' }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="personName">Person Name</Label>
         <Input
           id="personName"
@@ -97,7 +97,7 @@ export default function LoanForm({ loan, onClose, defaultType = 'given' }) {
         />
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="contactEmail">
           Their Email <span className="text-muted-foreground font-normal">(optional — for transaction notifications)</span>
         </Label>
@@ -110,10 +110,10 @@ export default function LoanForm({ loan, onClose, defaultType = 'given' }) {
         />
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="currency">Currency</Label>
         <Select value={formData.currency} onValueChange={(v) => handleChange('currency', v)}>
-          <SelectTrigger><SelectValue placeholder="Select currency" /></SelectTrigger>
+          <SelectTrigger className="w-full"><SelectValue placeholder="Select currency" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="BDT">BDT (Bangladeshi Taka)</SelectItem>
             <SelectItem value="USD">USD (US Dollar)</SelectItem>
@@ -122,7 +122,7 @@ export default function LoanForm({ loan, onClose, defaultType = 'given' }) {
         </Select>
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="notes">Notes</Label>
         <Textarea
           id="notes"
@@ -133,7 +133,7 @@ export default function LoanForm({ loan, onClose, defaultType = 'given' }) {
         />
       </div>
 
-      <div className="flex justify-end space-x-2">
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
         <Button type="submit" disabled={isLoading}>
           {isLoading ? 'Saving...' : loan ? 'Update Loan' : 'Create Loan'}

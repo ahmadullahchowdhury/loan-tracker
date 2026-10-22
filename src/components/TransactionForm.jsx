@@ -78,10 +78,10 @@ export default function TransactionForm({ loan, transaction, onClose }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="type">Transaction Type</Label>
         <Select value={formData.type} onValueChange={(v) => handleChange('type', v)}>
-          <SelectTrigger><SelectValue placeholder="Select transaction type" /></SelectTrigger>
+          <SelectTrigger className="w-full"><SelectValue placeholder="Select transaction type" /></SelectTrigger>
           <SelectContent>
             {typeOptions.map((o) => (
               <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
@@ -90,7 +90,7 @@ export default function TransactionForm({ loan, transaction, onClose }) {
         </Select>
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="amount">Amount</Label>
         <Input
           id="amount"
@@ -104,7 +104,7 @@ export default function TransactionForm({ loan, transaction, onClose }) {
         />
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="transactionDate">Transaction Date</Label>
         <Input
           id="transactionDate"
@@ -115,10 +115,10 @@ export default function TransactionForm({ loan, transaction, onClose }) {
         />
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="method">Transaction Method</Label>
         <Select value={formData.method} onValueChange={(v) => handleChange('method', v)}>
-          <SelectTrigger><SelectValue placeholder="Select method" /></SelectTrigger>
+          <SelectTrigger className="w-full"><SelectValue placeholder="Select method" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="Cash">Cash</SelectItem>
             <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
@@ -129,7 +129,7 @@ export default function TransactionForm({ loan, transaction, onClose }) {
         </Select>
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="notes">Notes</Label>
         <Textarea
           id="notes"
@@ -141,7 +141,7 @@ export default function TransactionForm({ loan, transaction, onClose }) {
       </div>
 
       {!transaction && loan.contactEmail && (
-        <div className="flex items-center justify-between rounded-lg border p-3">
+        <div className="flex items-center justify-between gap-3 rounded-lg border p-3">
           <div>
             <p className="text-sm font-medium">Send email alert</p>
             <p className="text-xs text-muted-foreground">Notify {loan.contactEmail}</p>
@@ -153,7 +153,7 @@ export default function TransactionForm({ loan, transaction, onClose }) {
         </div>
       )}
 
-      <div className="flex justify-end space-x-2">
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
         <Button type="submit" disabled={isLoading}>
           {isLoading ? 'Saving...' : transaction ? 'Update Transaction' : 'Add Transaction'}

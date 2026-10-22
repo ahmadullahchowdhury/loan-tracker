@@ -36,8 +36,8 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-muted/40 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md shadow-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Sign In</CardTitle>
           <CardDescription>Welcome back to Loan Tracker</CardDescription>
@@ -82,9 +82,9 @@ export default function LoginForm() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Don&apos;t have an account?{' '}
-              <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/register" className="font-medium text-primary underline-offset-4 hover:underline">
                 Sign up
               </Link>
             </p>

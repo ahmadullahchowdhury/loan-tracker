@@ -15,9 +15,9 @@ export default function DashboardPage() {
 
       <Dashboard />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Link href="/money-lent">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <Link href="/money-lent" className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <Card className="h-full cursor-pointer hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-lg font-medium text-green-600">Money Lent</CardTitle>
               <TrendingUp className="h-6 w-6 text-green-600" />
@@ -33,8 +33,8 @@ export default function DashboardPage() {
           </Card>
         </Link>
 
-        <Link href="/money-borrowed">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+        <Link href="/money-borrowed" className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <Card className="h-full cursor-pointer hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-lg font-medium text-red-600">Money Borrowed</CardTitle>
               <TrendingDown className="h-6 w-6 text-red-600" />
